@@ -7,7 +7,8 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
-        <ComboBox x:Name="cmbbxDevices" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="120"/>
+        <ComboBox x:Name="cmbbxDevices" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="cmbbxDevices_SelectionChanged"/>
+        <Label x:Name="lblSelectedDevice" Content="Label" HorizontalAlignment="Left" Margin="238,138,0,0" VerticalAlignment="Top"/>
 
     </Grid>
 </Window>

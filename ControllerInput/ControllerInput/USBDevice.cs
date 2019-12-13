@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Management;
+using System.Reflection;
 
 namespace ControllerInput
 {
@@ -24,8 +25,15 @@ namespace ControllerInput
 
         public override string ToString()
         {
-            return FriendlyName;
-            //return string.Format("{0} {1} {2} {3}",DeviceID, PnpDeviceId, FriendlyName, Description);
+            try
+            {
+                //return FriendlyName;
+                return string.Format("{0} {1} {2} {3}",DeviceID, PnpDeviceId, FriendlyName, Description);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(MethodInfo.GetCurrentMethod().DeclaringType.Name + "." + MethodInfo.GetCurrentMethod().Name + " -> " + ex.Message);
+            }
         }
 
         public static List<USBDevice> getUSBDevices()

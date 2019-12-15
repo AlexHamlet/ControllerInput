@@ -31,22 +31,8 @@ namespace ControllerInput
         {
             try
             {
-                USBDevice usb = (USBDevice)(cmbbxDevices.SelectedItem);
-                int devId, ProdId;
-                //Int32.TryParse(usb.DeviceID, out devId);
-                //Int32.TryParse(usb.PnpDeviceId, out ProdId);
-                devId = 9610;
-                ProdId = 4102;
-
-                UsbLibrary.SpecifiedDevice selected = UsbLibrary.SpecifiedDevice.FindSpecifiedDevice(devId, ProdId);
-                if (selected != null)
-                {
-                    lblSelectedDevice.Content = selected.ToString();
-                }
-                else
-                {
-                    lblSelectedDevice.Content = "Device not found";
-                }
+                USBDevice selected = (USBDevice)cmbbxDevices.SelectedItem;
+                lblSelectedDevice.Content = selected.getIDs();
             }
             catch (Exception ex)
             {

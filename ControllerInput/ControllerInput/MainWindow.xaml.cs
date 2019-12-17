@@ -23,10 +23,23 @@ namespace ControllerInput
     {
         public MainWindow()
         {
+            try
+            {
             InitializeComponent();
             cmbbxDevices.ItemsSource = USBDevice.getUSBDevices();
+            }
+            catch (Exception ex)
+            {
+                HandleError(MethodInfo.GetCurrentMethod().DeclaringType.Name,
+                    MethodInfo.GetCurrentMethod().Name, ex.Message);
+            }
         }
 
+        /// <summary>
+        /// Attempt to make an object out of the selected Device
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void cmbbxDevices_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             try
@@ -41,6 +54,12 @@ namespace ControllerInput
             }
         }
 
+        /// <summary>
+        /// Hanldes errors thrown by the program by printing the error to the screen
+        /// </summary>
+        /// <param name="sClass">Class throwing the error</param>
+        /// <param name="sMethod">Method throwing the error</param>
+        /// <param name="sMessage">Error message</param>
         private void HandleError(string sClass, string sMethod, string sMessage)
         {
             try

@@ -55,13 +55,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="HIDDevice.cs" />
-    <Compile Include="Report.cs" />
-    <Compile Include="SpecifiedDevice.cs" />
-    <Compile Include="SpecifiedInputReport.cs" />
-    <Compile Include="SpecifiedOutputReport.cs" />
     <Compile Include="USBDevice.cs" />
-    <Compile Include="Win32Usb.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

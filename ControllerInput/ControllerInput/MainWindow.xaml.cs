@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using SlimDX.XInput;
 
 namespace ControllerInput
 {
@@ -25,8 +26,10 @@ namespace ControllerInput
         {
             try
             {
-            InitializeComponent();
-            cmbbxDevices.ItemsSource = USBDevice.getUSBDevices();
+                InitializeComponent();
+                cmbbxDevices.ItemsSource = USBDevice.getUSBDevices();
+
+                Xbox360Controller p1 = new Xbox360Controller(new Controller(UserIndex.One));
             }
             catch (Exception ex)
             {
@@ -53,6 +56,8 @@ namespace ControllerInput
                     MethodInfo.GetCurrentMethod().Name, ex.Message);
             }
         }
+
+        public async
 
         /// <summary>
         /// Hanldes errors thrown by the program by printing the error to the screen

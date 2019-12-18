@@ -7,6 +7,7 @@ using System.Windows.Input;
 using System.Runtime.InteropServices;
 using SlimDX.DirectInput;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace ControllerInput
 {
@@ -45,7 +46,7 @@ namespace ControllerInput
 
         [DllImport("user32.dll")]
         private static extern bool SetCursorPos(int X, int Y);
-        private static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, int dwExtraInfo);
+        //private static extern void Keybd_event(byte bVk, byte bScan, uint dwFlags, int dwExtraInfo);
         private const byte KEYEVENTF_KEYUP = 0x0002;
         private const byte KEYBOARDEVENT_A = 0x41;
         private const byte KEYBOARDEVENT_B = 0x42;
@@ -147,19 +148,21 @@ namespace ControllerInput
                 {
                     if (x2Val > 50)
                     {
-                        keybd_event(KEYBOARDEVENT_RIGHT, 0, 0, 0);
+                        SendKeys.Send("{RIGHT}");
+                        //Keybd_event(KEYBOARDEVENT_RIGHT, 0, 0, 0);
                         arrowsHorizontalPressed = true;
                     }
                     if (x2Val < -50)
                     {
-                        keybd_event(KEYBOARDEVENT_LEFT, 0, 0, 0);
+                        SendKeys.Send("{LEFT}");
+                        //Keybd_event(KEYBOARDEVENT_LEFT, 0, 0, 0);
                         arrowsHorizontalPressed = true;
                     }
                 }
                 else if (arrowsHorizontalPressed && Math.Abs(x2Val) < 50)
                 {
-                    keybd_event(KEYBOARDEVENT_RIGHT, 0, KEYEVENTF_KEYUP, 0);
-                    keybd_event(KEYBOARDEVENT_LEFT, 0, KEYEVENTF_KEYUP, 0);
+                    //Keybd_event(KEYBOARDEVENT_RIGHT, 0, KEYEVENTF_KEYUP, 0);
+                    //Keybd_event(KEYBOARDEVENT_LEFT, 0, KEYEVENTF_KEYUP, 0);
                     arrowsHorizontalPressed = false;
                 }
 
@@ -167,19 +170,21 @@ namespace ControllerInput
                 {
                     if (y2Val > 50)
                     {
-                        keybd_event(KEYBOARDEVENT_DOWN, 0, 0, 0);
+                        SendKeys.Send("{DOWN}");
+                        //Keybd_event(KEYBOARDEVENT_DOWN, 0, 0, 0);
                         arrowsVerticalPressed = true;
                     }
                     if (y2Val < -50)
                     {
-                        keybd_event(KEYBOARDEVENT_UP, 0, 0, 0);
+                        SendKeys.Send("{UP}");
+                        //Keybd_event(KEYBOARDEVENT_UP, 0, 0, 0);
                         arrowsVerticalPressed = true;
                     }
                 }
                 else if (arrowsVerticalPressed && Math.Abs(y2Val) < 50)
                 {
-                    keybd_event(KEYBOARDEVENT_DOWN, 0, KEYEVENTF_KEYUP, 0);
-                    keybd_event(KEYBOARDEVENT_UP, 0, KEYEVENTF_KEYUP, 0);
+                    //Keybd_event(KEYBOARDEVENT_DOWN, 0, KEYEVENTF_KEYUP, 0);
+                    //Keybd_event(KEYBOARDEVENT_UP, 0, KEYEVENTF_KEYUP, 0);
                     arrowsVerticalPressed = false;
                 }
 
@@ -237,48 +242,48 @@ namespace ControllerInput
                         switch (pov[0])
                         {
                             case dpadUp:
-                                keybd_event(KEYBOARDEVENT_1, 0, 0, 0);
+                                //Keybd_event(KEYBOARDEVENT_1, 0, 0, 0);
                                 povPressed = true;
                                 break;
                             case dpadUpRight:
-                                keybd_event(KEYBOARDEVENT_2, 0, 0, 0);
+                                //Keybd_event(KEYBOARDEVENT_2, 0, 0, 0);
                                 povPressed = true;
                                 break;
                             case dpadRight:
-                                keybd_event(KEYBOARDEVENT_3, 0, 0, 0);
+                                //Keybd_event(KEYBOARDEVENT_3, 0, 0, 0);
                                 break;
                             case dpadDownRight:
-                                keybd_event(KEYBOARDEVENT_4, 0, 0, 0);
+                                //Keybd_event(KEYBOARDEVENT_4, 0, 0, 0);
                                 povPressed = true;
                                 break;
                             case dpadDown:
-                                keybd_event(KEYBOARDEVENT_5, 0, 0, 0);
+                               // Keybd_event(KEYBOARDEVENT_5, 0, 0, 0);
                                 povPressed = true;
                                 break;
                             case dpadDownLeft:
-                                keybd_event(KEYBOARDEVENT_6, 0, 0, 0);
+                               // Keybd_event(KEYBOARDEVENT_6, 0, 0, 0);
                                 povPressed = true;
                                 break;
                             case dpadLeft:
-                                keybd_event(KEYBOARDEVENT_7, 0, 0, 0);
+                                //Keybd_event(KEYBOARDEVENT_7, 0, 0, 0);
                                 povPressed = true;
                                 break;
                             case dpadUpLeft:
-                                keybd_event(KEYBOARDEVENT_8, 0, 0, 0);
+                                //Keybd_event(KEYBOARDEVENT_8, 0, 0, 0);
                                 povPressed = true;
                                 break;
                         }
                     }
                     else if (povPressed && pov[0] == -1)
                     {
-                        keybd_event(KEYBOARDEVENT_1, 0, KEYEVENTF_KEYUP, 0);
-                        keybd_event(KEYBOARDEVENT_2, 0, KEYEVENTF_KEYUP, 0);
-                        keybd_event(KEYBOARDEVENT_3, 0, KEYEVENTF_KEYUP, 0);
-                        keybd_event(KEYBOARDEVENT_4, 0, KEYEVENTF_KEYUP, 0);
-                        keybd_event(KEYBOARDEVENT_5, 0, KEYEVENTF_KEYUP, 0);
-                        keybd_event(KEYBOARDEVENT_6, 0, KEYEVENTF_KEYUP, 0);
-                        keybd_event(KEYBOARDEVENT_7, 0, KEYEVENTF_KEYUP, 0);
-                        keybd_event(KEYBOARDEVENT_8, 0, KEYEVENTF_KEYUP, 0);
+                        //Keybd_event(KEYBOARDEVENT_1, 0, KEYEVENTF_KEYUP, 0);
+                        //Keybd_event(KEYBOARDEVENT_2, 0, KEYEVENTF_KEYUP, 0);
+                        //Keybd_event(KEYBOARDEVENT_3, 0, KEYEVENTF_KEYUP, 0);
+                        //Keybd_event(KEYBOARDEVENT_4, 0, KEYEVENTF_KEYUP, 0);
+                        //Keybd_event(KEYBOARDEVENT_5, 0, KEYEVENTF_KEYUP, 0);
+                        //Keybd_event(KEYBOARDEVENT_6, 0, KEYEVENTF_KEYUP, 0);
+                        //Keybd_event(KEYBOARDEVENT_7, 0, KEYEVENTF_KEYUP, 0);
+                        //Keybd_event(KEYBOARDEVENT_8, 0, KEYEVENTF_KEYUP, 0);
                         povPressed = false;
                     }
                 }
@@ -291,12 +296,12 @@ namespace ControllerInput
 
             if (!buttonCheck[button] && isPressed)
             {
-                keybd_event(key, 0, 0, 0);
+                //Keybd_event(key, 0, 0, 0);
                 buttonCheck[button] = true;
             }
             else if (buttonCheck[button] && !isPressed)
             {
-                keybd_event(key, 0, KEYEVENTF_KEYUP, 0);
+               // Keybd_event(key, 0, KEYEVENTF_KEYUP, 0);
                 buttonCheck[button] = false;
             }
         }
@@ -319,6 +324,8 @@ namespace ControllerInput
             {
                 //USBDevice selected = (USBDevice)cmbbxDevices.SelectedItem;
                 //lblSelectedDevice.Content = selected.getIDs();
+                Joystick selected = (Joystick)cmbbxDevices.SelectedItem;
+                stickHandle(selected, cmbbxDevices.SelectedIndex);
             }
             catch (Exception ex)
             {

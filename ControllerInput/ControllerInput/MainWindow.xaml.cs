@@ -54,6 +54,22 @@ namespace ControllerInput
                 {
                     mwl.SelectStick(selected);
                     mwl.StickHandle();
+
+                    int delay = 1;
+                    var cancellationTokenSource = new CancellationTokenSource();
+                    var token = cancellationTokenSource.Token;
+                    var listener = Task.Factory.StartNew(() =>
+                    {
+                        while (true)
+                        {
+                            // poll hardware
+                            Thread.Sleep(delay);
+                            if (token.IsCancellationRequested)
+                                break;
+                        }
+
+                        // cleanup, e.g. close connection
+                    }, token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
                 }
             }
             catch (Exception ex)

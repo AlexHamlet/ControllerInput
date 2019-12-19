@@ -12,6 +12,7 @@ namespace ControllerInput
     class MainWindowLogic
     {
         Gamepad gpad;
+        JoystickState state;
 
         public List<Joystick> getSticks()
         {
@@ -40,6 +41,7 @@ namespace ControllerInput
                         {
                             // poll hardware
                             gpad.stickHandle();
+                            state = gpad.state;
                             Thread.Sleep(delay);
                             if (token.IsCancellationRequested)
                                 break;
@@ -66,6 +68,11 @@ namespace ControllerInput
             {
                 throw new Exception(MethodInfo.GetCurrentMethod().DeclaringType.Name + "." + MethodInfo.GetCurrentMethod().Name + " -> " + ex.Message);
             }
+        }
+
+        public JoystickState getStickState()
+        {
+            return state;
         }
 
     }

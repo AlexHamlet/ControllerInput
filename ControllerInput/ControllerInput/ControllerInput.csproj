@@ -58,6 +58,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Gamepad.cs" />
+    <Compile Include="MainWindowLogic.cs" />
     <Compile Include="USBDevice.cs" />
     <Compile Include="Xbox360Controller.cs" />
     <Page Include="MainWindow.xaml">

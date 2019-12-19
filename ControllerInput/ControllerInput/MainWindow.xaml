@@ -9,6 +9,7 @@
     <Grid>
         <ComboBox x:Name="cmbbxDevices" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="cmbbxDevices_SelectionChanged"/>
         <Label x:Name="lblSelectedDevice" Content="Label" HorizontalAlignment="Left" Margin="238,138,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="btnRefresh" Content="Refresh" HorizontalAlignment="Left" Margin="135,10,0,0" VerticalAlignment="Top" Width="76" Click="btnRefresh_Click"/>
 
     </Grid>
 </Window>

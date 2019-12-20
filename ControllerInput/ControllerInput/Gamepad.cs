@@ -14,13 +14,21 @@ namespace ControllerInput
     {
         //SlimDX initialization
         DirectInput input = new DirectInput();
+        /// <summary>
+        /// Input device
+        /// </summary>
         Joystick stick;
+        /// <summary>
+        /// The State of the input device
+        /// </summary>
         public JoystickState state { get; private set; }
 
         //Array of joysticks to use
         Joystick[] sticks;
         //Joystick deadband value
-        int deadBandValue = 20;
+        int deadBandValue = 30;
+
+        //TODO: Make axis and button lists dynamic
         //Access all of the axis of xbox 360 controller
         int xVal, yVal, ltVal, rtVal, x2Val, y2Val;
         //Access all of the buttons of xbox 360 controller
@@ -72,8 +80,15 @@ namespace ControllerInput
 
         public Gamepad(Joystick stick)
         {
-            this.stick = stick;
-            state = new JoystickState();
+            try
+            {
+                this.stick = stick;
+                state = new JoystickState();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(MethodInfo.GetCurrentMethod().DeclaringType.Name + "." + MethodInfo.GetCurrentMethod().Name + " -> " + ex.Message);
+            }
         }
 
         //Initializes the variable sticks with all of the found Joysticks
@@ -108,192 +123,217 @@ namespace ControllerInput
         //Handles the state of the Joysticks
         public void stickHandle()
         {
-            state = stick.GetCurrentState();
-            //Checks for axis states
-            xVal = state.X;
-            yVal = state.Y;
-            //Seperates the Z value between the trigger buttons
-            if (state.Z < 0)
+            try
             {
-                rtVal = state.Z;
-                ltVal = 0;
-            }
-            else
-            {
-                rtVal = 0;
-                ltVal = state.Z;
-            }
-            //Checks for the second joystick on the controller
-            x2Val = state.RotationX;
-            y2Val = state.RotationY;
-            //If the first joystick is actually moved, move the mouse accordingly
-            if (xVal > deadBandValue || xVal < -deadBandValue || yVal > deadBandValue || yVal < -deadBandValue)
-            { 
-                MouseMove(xVal,yVal);
-            }
-            //If the second joystick is actually moved, press the arrow keys accordingly
-            if (!arrowsHorizontalPressed)
-            {
-                if (x2Val > 50)
+                state = stick.GetCurrentState();
+                //Checks for axis states
+                xVal = state.X;
+                yVal = state.Y;
+                //Check for button states.
+                bool[] buttons = state.GetButtons();
+                int[] pov = state.GetPointOfViewControllers();
+                //Seperates the Z value between the trigger buttons
+                if (state.Z < 0)
                 {
-                    keybd_event(KEYBOARDEVENT_RIGHT, 0, 0, 0);
-                    arrowsHorizontalPressed = true;
+                    rtVal = state.Z;
+                    ltVal = 0;
                 }
-                if (x2Val < -50)
+                else
                 {
-                    keybd_event(KEYBOARDEVENT_LEFT, 0, 0, 0);
-                    arrowsHorizontalPressed = true;
+                    rtVal = 0;
+                    ltVal = state.Z;
                 }
-            }
-            else if (arrowsHorizontalPressed && Math.Abs(x2Val) < 50)
-            {
-                keybd_event(KEYBOARDEVENT_RIGHT, 0, KEYEVENTF_KEYUP, 0);
-                keybd_event(KEYBOARDEVENT_LEFT, 0, KEYEVENTF_KEYUP, 0);
-                arrowsHorizontalPressed = false;
-            }
+                //Checks for the second joystick on the controller
+                x2Val = state.RotationX;
+                y2Val = state.RotationY;
+                //If the first joystick is actually moved, move the mouse accordingly
+                if (xVal > deadBandValue || xVal < -deadBandValue || yVal > deadBandValue || yVal < -deadBandValue)
+                {
+                    MouseMove(xVal, yVal);
+                }
+                //If the second joystick is actually moved, press the arrow keys accordingly
+                if (!arrowsHorizontalPressed)
+                {
+                    if (x2Val > 50)
+                    {
+                        keybd_event(KEYBOARDEVENT_RIGHT, 0, 0, 0);
+                        arrowsHorizontalPressed = true;
+                    }
+                    if (x2Val < -50)
+                    {
+                        keybd_event(KEYBOARDEVENT_LEFT, 0, 0, 0);
+                        arrowsHorizontalPressed = true;
+                    }
+                }
+                else if (arrowsHorizontalPressed && Math.Abs(x2Val) < 50)
+                {
+                    keybd_event(KEYBOARDEVENT_RIGHT, 0, KEYEVENTF_KEYUP, 0);
+                    keybd_event(KEYBOARDEVENT_LEFT, 0, KEYEVENTF_KEYUP, 0);
+                    arrowsHorizontalPressed = false;
+                }
 
-            if (!arrowsVerticalPressed)
-            {
-                if (y2Val > 50)
+                if (!arrowsVerticalPressed)
                 {
-                    keybd_event(KEYBOARDEVENT_DOWN, 0, 0, 0);
-                    arrowsVerticalPressed = true;
+                    if (y2Val > 50)
+                    {
+                        keybd_event(KEYBOARDEVENT_DOWN, 0, 0, 0);
+                        arrowsVerticalPressed = true;
+                    }
+                    if (y2Val < -50)
+                    {
+                        keybd_event(KEYBOARDEVENT_UP, 0, 0, 0);
+                        arrowsVerticalPressed = true;
+                    }
                 }
-                if (y2Val < -50)
+                else if (arrowsVerticalPressed && Math.Abs(y2Val) < 50)
                 {
-                    keybd_event(KEYBOARDEVENT_UP, 0, 0, 0);
-                    arrowsVerticalPressed = true;
+                    keybd_event(KEYBOARDEVENT_DOWN, 0, KEYEVENTF_KEYUP, 0);
+                    keybd_event(KEYBOARDEVENT_UP, 0, KEYEVENTF_KEYUP, 0);
+                    arrowsVerticalPressed = false;
                 }
-            }
-            else if (arrowsVerticalPressed && Math.Abs(y2Val) < 50)
-            {
-                keybd_event(KEYBOARDEVENT_DOWN, 0, KEYEVENTF_KEYUP, 0);
-                keybd_event(KEYBOARDEVENT_UP, 0, KEYEVENTF_KEYUP, 0);
-                arrowsVerticalPressed = false;
-            }
 
-            //Check for button states.
-            bool[] buttons = state.GetButtons();
-            int[] pov = state.GetPointOfViewControllers();
+                //Left Click
+                if (Math.Abs(ltVal) > 50)
+                {
+                    if (ltPressed == false)
+                    {
+                        mouse_event(MOUSEEVENT_LEFTDONW, 0, 0, 0, 0);
+                        ltPressed = true;
+                    }
+                }
+                else
+                {
+                    if (ltPressed == true)
+                    {
+                        mouse_event(MOUSEEVENT_LEFTUP, 0, 0, 0, 0);
+                        ltPressed = false;
+                    }
+                }
+                //Right Click
+                if (Math.Abs(rtVal) > 50)
+                {
+                    if (rtPressed == false)
+                    {
+                        mouse_event(MOUSEEVENT_RIGHTDOWN, 0, 0, 0, 0);
+                        rtPressed = true;
+                    }
+                }
+                else
+                {
+                    if (rtPressed == true)
+                    {
+                        mouse_event(MOUSEEVENT_RIGHTUP, 0, 0, 0, 0);
+                        rtPressed = false;
+                    }
+                }
 
-
-            //Left Click
-            if (Math.Abs(ltVal) > 50)
-            {
-                if (ltPressed == false)
+                //Handles Buttons
+                for (int p = 0; p < keybdArray.Length; p++)
                 {
-                    mouse_event(MOUSEEVENT_LEFTDONW, 0, 0, 0, 0);
-                    ltPressed = true;
+                    checkButton(p, keybdArray[p], buttons[p]);
                 }
-            }
-            else
-            {
-                if (ltPressed == true)
-                {
-                    mouse_event(MOUSEEVENT_LEFTUP, 0, 0, 0, 0);
-                    ltPressed = false;
-                }
-            }
-            //Right Click
-            if (Math.Abs(rtVal) > 50)
-            {
-                if (rtPressed == false)
-                {
-                    mouse_event(MOUSEEVENT_RIGHTDOWN, 0, 0, 0, 0);
-                    rtPressed = true;
-                }
-            }
-            else
-            {
-                if (rtPressed == true)
-                {
-                    mouse_event(MOUSEEVENT_RIGHTUP, 0, 0, 0, 0);
-                    rtPressed = false;
-                }
-            }
-
-            //Handles Buttons
-            for (int p = 0; p < keybdArray.Length; p++)
-            {
-                checkButton(p, keybdArray[p], buttons[p]);
-            }
 
 
-            //POV Buttons
-            if (!povPressed && pov[0] != -1)
-            {
-                switch (pov[0])
+                //POV Buttons
+                if (!povPressed && pov[0] != -1)
                 {
-                    case dpadUp:
-                        keybd_event(KEYBOARDEVENT_1, 0, 0, 0);
-                        povPressed = true;
-                        break;
-                    case dpadUpRight:
-                        keybd_event(KEYBOARDEVENT_2, 0, 0, 0);
-                        povPressed = true;
-                        break;
-                    case dpadRight:
-                        keybd_event(KEYBOARDEVENT_3, 0, 0, 0);
-                        break;
-                    case dpadDownRight:
-                        keybd_event(KEYBOARDEVENT_4, 0, 0, 0);
-                        povPressed = true;
-                        break;
-                    case dpadDown:
-                        // Keybd_event(KEYBOARDEVENT_5, 0, 0, 0);
-                        povPressed = true;
-                        break;
-                    case dpadDownLeft:
-                        // Keybd_event(KEYBOARDEVENT_6, 0, 0, 0);
-                        povPressed = true;
-                        break;
-                    case dpadLeft:
-                        keybd_event(KEYBOARDEVENT_7, 0, 0, 0);
-                        povPressed = true;
-                        break;
-                    case dpadUpLeft:
-                        keybd_event(KEYBOARDEVENT_8, 0, 0, 0);
-                        povPressed = true;
-                        break;
+                    switch (pov[0])
+                    {
+                        case dpadUp:
+                            keybd_event(KEYBOARDEVENT_1, 0, 0, 0);
+                            povPressed = true;
+                            break;
+                        case dpadUpRight:
+                            keybd_event(KEYBOARDEVENT_2, 0, 0, 0);
+                            povPressed = true;
+                            break;
+                        case dpadRight:
+                            keybd_event(KEYBOARDEVENT_3, 0, 0, 0);
+                            break;
+                        case dpadDownRight:
+                            keybd_event(KEYBOARDEVENT_4, 0, 0, 0);
+                            povPressed = true;
+                            break;
+                        case dpadDown:
+                            // Keybd_event(KEYBOARDEVENT_5, 0, 0, 0);
+                            povPressed = true;
+                            break;
+                        case dpadDownLeft:
+                            // Keybd_event(KEYBOARDEVENT_6, 0, 0, 0);
+                            povPressed = true;
+                            break;
+                        case dpadLeft:
+                            keybd_event(KEYBOARDEVENT_7, 0, 0, 0);
+                            povPressed = true;
+                            break;
+                        case dpadUpLeft:
+                            keybd_event(KEYBOARDEVENT_8, 0, 0, 0);
+                            povPressed = true;
+                            break;
+                    }
+                }
+                else if (povPressed && pov[0] == -1)
+                {
+                    keybd_event(KEYBOARDEVENT_1, 0, KEYEVENTF_KEYUP, 0);
+                    keybd_event(KEYBOARDEVENT_2, 0, KEYEVENTF_KEYUP, 0);
+                    keybd_event(KEYBOARDEVENT_3, 0, KEYEVENTF_KEYUP, 0);
+                    keybd_event(KEYBOARDEVENT_4, 0, KEYEVENTF_KEYUP, 0);
+                    keybd_event(KEYBOARDEVENT_5, 0, KEYEVENTF_KEYUP, 0);
+                    keybd_event(KEYBOARDEVENT_6, 0, KEYEVENTF_KEYUP, 0);
+                    keybd_event(KEYBOARDEVENT_7, 0, KEYEVENTF_KEYUP, 0);
+                    keybd_event(KEYBOARDEVENT_8, 0, KEYEVENTF_KEYUP, 0);
+                    povPressed = false;
                 }
             }
-            else if (povPressed && pov[0] == -1)
+            catch (Exception ex)
             {
-                keybd_event(KEYBOARDEVENT_1, 0, KEYEVENTF_KEYUP, 0);
-                keybd_event(KEYBOARDEVENT_2, 0, KEYEVENTF_KEYUP, 0);
-                keybd_event(KEYBOARDEVENT_3, 0, KEYEVENTF_KEYUP, 0);
-                keybd_event(KEYBOARDEVENT_4, 0, KEYEVENTF_KEYUP, 0);
-                keybd_event(KEYBOARDEVENT_5, 0, KEYEVENTF_KEYUP, 0);
-                keybd_event(KEYBOARDEVENT_6, 0, KEYEVENTF_KEYUP, 0);
-                keybd_event(KEYBOARDEVENT_7, 0, KEYEVENTF_KEYUP, 0);
-                keybd_event(KEYBOARDEVENT_8, 0, KEYEVENTF_KEYUP, 0);
-                povPressed = false;
+                throw new Exception(MethodInfo.GetCurrentMethod().DeclaringType.Name + "." + MethodInfo.GetCurrentMethod().Name + " -> " + ex.Message);
             }
         }
 
-        //handles controller to keyboard action
+        /// <summary>
+        /// Handles button presses
+        /// </summary>
+        /// <param name="button">Button index</param>
+        /// <param name="key">Associated Key to press</param>
+        /// <param name="isPressed">Ensures each press only occurs once</param>
         private void checkButton(int button, byte key, bool isPressed)
         {
-
-            if (!buttonCheck[button] && isPressed)
+            try
             {
-                keybd_event(key, 0, 0, 0);
-                buttonCheck[button] = true;
+                if (!buttonCheck[button] && isPressed)
+                {
+                    keybd_event(key, 0, 0, 0);
+                    buttonCheck[button] = true;
+                }
+                else if (buttonCheck[button] && !isPressed)
+                {
+                    keybd_event(key, 0, KEYEVENTF_KEYUP, 0);
+                    buttonCheck[button] = false;
+                }
             }
-            else if (buttonCheck[button] && !isPressed)
+            catch (Exception ex)
             {
-                keybd_event(key, 0, KEYEVENTF_KEYUP, 0);
-                buttonCheck[button] = false;
+                throw new Exception(MethodInfo.GetCurrentMethod().DeclaringType.Name + "." + MethodInfo.GetCurrentMethod().Name + " -> " + ex.Message);
             }
         }
 
-        //Moves the cursor on the screen
+        /// <summary>
+        /// Updates the mouse position
+        /// </summary>
+        /// <param name="xpos">X distance to move</param>
+        /// <param name="ypos">Y distance to move</param>
         public void MouseMove(int xpos, int ypos)
         {
-            var pos = System.Windows.Forms.Cursor.Position;
-            System.Windows.Forms.Cursor.Position = new System.Drawing.Point(pos.X + (xpos - deadBandValue), pos.Y + (ypos - deadBandValue));
+            try
+            {
+                var pos = System.Windows.Forms.Cursor.Position;
+                System.Windows.Forms.Cursor.Position = new System.Drawing.Point(pos.X + (xpos - deadBandValue), pos.Y + (ypos - deadBandValue));
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(MethodInfo.GetCurrentMethod().DeclaringType.Name + "." + MethodInfo.GetCurrentMethod().Name + " -> " + ex.Message);
+            }
         }
-
-
     }
 }

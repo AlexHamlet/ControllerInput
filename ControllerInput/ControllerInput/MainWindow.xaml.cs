@@ -17,9 +17,14 @@ namespace ControllerInput
     /// </summary>
     public partial class MainWindow : Window
     {
-
+        /// <summary>
+        /// Used to handle all calls to the controller.
+        /// </summary>
         MainWindowLogic mwl;
 
+        /// <summary>
+        /// Constructor. Initializes Logic class and device list.
+        /// </summary>
         public MainWindow()
         {
             try
@@ -35,13 +40,26 @@ namespace ControllerInput
             }
         }
 
+        /// <summary>
+        /// Refreshes the Device List
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnRefresh_Click(object sender, RoutedEventArgs e)
         {
-            cmbbxDevices.ItemsSource = mwl.getSticks();
+            try
+            {
+                cmbbxDevices.ItemsSource = mwl.getSticks();
+            }
+            catch (Exception ex)
+            {
+                HandleError(MethodInfo.GetCurrentMethod().DeclaringType.Name,
+                    MethodInfo.GetCurrentMethod().Name, ex.Message);
+            }
         }
 
         /// <summary>
-        /// Attempt to make an object out of the selected Device
+        /// Initializes Selected Device and begins polling.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>

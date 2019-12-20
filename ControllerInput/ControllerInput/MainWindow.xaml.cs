@@ -76,11 +76,22 @@ namespace ControllerInput
                     int delay = 1;
                     var cancellationTokenSource = new CancellationTokenSource();
                     var token = cancellationTokenSource.Token;
+                    //TroubleShooting
+                    string output;
+                    List<bool> bstates;
                     var listener = Task.Factory.StartNew(() =>
                     {
                         while (true)
                         {
                             // poll hardware
+                            //output = "";
+                            //bstates = mwl.getButtons();
+                            //foreach (bool b in bstates)
+                            //{
+                            //    output += "b\n";
+                            //}
+                            //lblSelectedDevice.Content = output;
+
                             Thread.Sleep(delay);
                             if (token.IsCancellationRequested)
                                 break;

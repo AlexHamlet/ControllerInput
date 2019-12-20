@@ -12,16 +12,16 @@ namespace ControllerInput
 {
     class Gamepad
     {
-        //SlimDX initialization
-        DirectInput input = new DirectInput();
         /// <summary>
         /// Input device
         /// </summary>
-        Joystick stick;
+        Joystick device;
         /// <summary>
         /// The State of the input device
         /// </summary>
         public JoystickState state { get; private set; }
+        List<int> axis;
+        List<bool> buttons;
 
         //Array of joysticks to use
         Joystick[] sticks;
@@ -82,8 +82,22 @@ namespace ControllerInput
         {
             try
             {
-                this.stick = stick;
+                //Init input device
+                this.device = stick;
+                //Init State
                 state = new JoystickState();
+                //Init axis
+                axis = new List<int>();
+                foreach (int val in state.GetAccelerationSliders())
+                {
+                    axis.Add(val);
+                }
+                //Init buttons
+                buttons = new List<bool>();
+                foreach (bool b in state.GetButtons())
+                {
+                    buttons.Add(b);
+                }
             }
             catch (Exception ex)
             {
@@ -91,7 +105,72 @@ namespace ControllerInput
             }
         }
 
-        //Initializes the variable sticks with all of the found Joysticks
+        /// <summary>
+        /// Gets the state of all buttons on the device
+        /// </summary>
+        /// <returns>List<bool> of button states</returns>
+        public List<bool> getButtons()
+        {
+            try
+            {
+                return buttons;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(MethodInfo.GetCurrentMethod().DeclaringType.Name + "." + MethodInfo.GetCurrentMethod().Name + " -> " + ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Gets the values of all axis on the device
+        /// </summary>
+        /// <returns>List<int> of axis values</returns>
+        public List<int> getAxis()
+        {
+            try
+            {
+                return axis;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(MethodInfo.GetCurrentMethod().DeclaringType.Name + "." + MethodInfo.GetCurrentMethod().Name + " -> " + ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Updates the state of the device
+        /// Call before reading values
+        /// </summary>
+        public void update()
+        {
+            try
+            {
+                state = device.GetCurrentState();
+                //Update buttons
+                buttons.Clear();
+                bool[] newbuttons = state.GetButtons();
+                for (int p = 0; p < newbuttons.Length; p++)
+                {
+                    buttons.Add(newbuttons[p]);
+                }
+                //Update axis
+                axis.Clear();
+                int[] newaxis = state.GetAccelerationSliders();
+                for (int p = 0; p < newaxis.Length; p++)
+                {
+                    axis.Add(newaxis[p]);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(MethodInfo.GetCurrentMethod().DeclaringType.Name + "." + MethodInfo.GetCurrentMethod().Name + " -> " + ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Gets all available devices
+        /// </summary>
+        /// <returns>List<Joystick> of available devices</returns>
         public static List<Joystick> getSticks()
         {
             DirectInput input = new DirectInput();
@@ -120,12 +199,13 @@ namespace ControllerInput
             }
             return sticks;
         }
+
         //Handles the state of the Joysticks
         public void stickHandle()
         {
             try
             {
-                state = stick.GetCurrentState();
+                state = device.GetCurrentState();
                 //Checks for axis states
                 xVal = state.X;
                 yVal = state.Y;

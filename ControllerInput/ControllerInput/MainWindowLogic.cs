@@ -55,8 +55,8 @@ namespace ControllerInput
                         while (true)
                         {
                             // poll hardware
-                            gpad.stickHandle();
-                            state = gpad.state;
+                            //gpad.stickHandle();
+                            gpad.update();
                             Thread.Sleep(delay);
                             if (token.IsCancellationRequested)
                                 break;
@@ -105,5 +105,16 @@ namespace ControllerInput
             }
         }
 
+        public List<bool> getButtons()
+        {
+            try
+            {
+                return gpad.getButtons();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(MethodInfo.GetCurrentMethod().DeclaringType.Name + "." + MethodInfo.GetCurrentMethod().Name + " -> " + ex.Message);
+            }
+        }
     }
 }

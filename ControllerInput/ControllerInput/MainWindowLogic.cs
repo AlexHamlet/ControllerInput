@@ -39,7 +39,7 @@ namespace ControllerInput
         /// <summary>
         /// Currently Performs all input functionality based on the JoystickState
         /// </summary>
-        public void StickHandle()
+        public void update()
         {
             try
             {
@@ -47,23 +47,24 @@ namespace ControllerInput
                 {
                     //TODO: Allow the user to change later.
                     //17ms delay operates at approx 60fps
-                    int delay = 17;
-                    var cancellationTokenSource = new CancellationTokenSource();
-                    var token = cancellationTokenSource.Token;
-                    var listener = Task.Factory.StartNew(() =>
-                    {
-                        while (true)
-                        {
-                            // poll hardware
-                            //gpad.stickHandle();
-                            gpad.update();
-                            Thread.Sleep(delay);
-                            if (token.IsCancellationRequested)
-                                break;
-                        }
+                    //int delay = 17;
+                    //var cancellationTokenSource = new CancellationTokenSource();
+                    //var token = cancellationTokenSource.Token;
+                    //var listener = Task.Factory.StartNew(() =>
+                    //{
+                    //    while (true)
+                    //    {
+                    //        // poll hardware
+                    //        //gpad.stickHandle();
+                    //        gpad.update();
+                    //        Thread.Sleep(delay);
+                    //        if (token.IsCancellationRequested)
+                    //            break;
+                    //    }
 
-                        // cleanup, e.g. close connection
-                    }, token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+                    //    // cleanup, e.g. close connection
+                    //}, token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+                    gpad.update();
 
                 }
             }

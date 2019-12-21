@@ -9,6 +9,7 @@ using SlimDX.DirectInput;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Threading;
+using System.ComponentModel;
 
 namespace ControllerInput
 {
@@ -22,6 +23,9 @@ namespace ControllerInput
         /// </summary>
         MainWindowLogic mwl;
 
+        private delegate void UpdateDisplayDelegate();
+        BackgroundWorker background;
+
         /// <summary>
         /// Constructor. Initializes Logic class and device list.
         /// </summary>
@@ -30,7 +34,13 @@ namespace ControllerInput
             try
             {
                 InitializeComponent();
+                //Initialize Logic Class
                 mwl = new MainWindowLogic();
+                //Initialize Backgroundworker
+                background = new BackgroundWorker();
+                background.WorkerReportsProgress = true;
+                background.DoWork += Background_DoWork;
+                //Populate Device List
                 cmbbxDevices.ItemsSource = mwl.getSticks();
             }
             catch (Exception ex)
@@ -38,6 +48,27 @@ namespace ControllerInput
                 HandleError(MethodInfo.GetCurrentMethod().DeclaringType.Name,
                     MethodInfo.GetCurrentMethod().Name, ex.Message);
             }
+        }
+
+        private void Background_DoWork(object sender, DoWorkEventArgs e)
+        {
+            this.Dispatcher.BeginInvoke(new UpdateDisplayDelegate(UpdateDisplay));
+        }
+
+        private void UpdateDisplay()
+        {
+            lblSelectedDevice.Content = "It worked!";
+            // poll hardware
+            string output;
+            List<bool> bstates;
+            mwl.update();
+            output = "";
+            bstates = mwl.getButtons();
+            foreach (bool b in bstates)
+            {
+                output += b + "\n";
+            }
+            lblSelectedDevice.Content = output;
         }
 
         /// <summary>
@@ -71,9 +102,9 @@ namespace ControllerInput
                 if (selected != null)
                 {
                     mwl.SelectStick(selected);
-                    mwl.StickHandle();
+                    mwl.update();
 
-                    int delay = 1;
+                    int delay = 17;
                     var cancellationTokenSource = new CancellationTokenSource();
                     var token = cancellationTokenSource.Token;
                     //TroubleShooting
@@ -84,6 +115,7 @@ namespace ControllerInput
                         while (true)
                         {
                             // poll hardware
+                            //mwl.update();
                             //output = "";
                             //bstates = mwl.getButtons();
                             //foreach (bool b in bstates)
@@ -91,6 +123,7 @@ namespace ControllerInput
                             //    output += "b\n";
                             //}
                             //lblSelectedDevice.Content = output;
+                            background.RunWorkerAsync();
 
                             Thread.Sleep(delay);
                             if (token.IsCancellationRequested)

@@ -57,7 +57,7 @@ namespace ControllerInput
 
         private void UpdateDisplay()
         {
-            lblSelectedDevice.Content = "It worked!";
+            lblButtons.Content = "It worked!";
             // poll hardware
             string output;
             List<bool> bstates;
@@ -68,7 +68,22 @@ namespace ControllerInput
             {
                 output += b + "\n";
             }
-            lblSelectedDevice.Content = output;
+            lblButtons.Content = output;
+            lblAccSlider.Content = DisplayHelper(mwl.getAccelerationSliders());
+            lblForceSlider.Content = DisplayHelper(mwl.getForceSliders());
+            lblPOV.Content = DisplayHelper(mwl.getPOV());
+            lblSliders.Content = DisplayHelper(mwl.getSliders());
+            lblVelSlider.Content = DisplayHelper(mwl.getVelocitySliders());
+        }
+
+        private string DisplayHelper(List<int> Given)
+        {
+            string output = "";
+            foreach(int val in Given)
+            {
+                output += val + "\n";
+            }
+            return output;
         }
 
         /// <summary>

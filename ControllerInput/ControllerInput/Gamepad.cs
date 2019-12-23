@@ -20,8 +20,12 @@ namespace ControllerInput
         /// The State of the input device
         /// </summary>
         public JoystickState state { get; private set; }
-        List<int> axis;
+        List<int> AccSlider;
         List<bool> buttons;
+        List<int> ForceSlider;
+        List<int> POV;
+        List<int> Sliders;
+        List<int> VelSlider;
 
         //Array of joysticks to use
         Joystick[] sticks;
@@ -86,17 +90,40 @@ namespace ControllerInput
                 this.device = stick;
                 //Init State
                 state = new JoystickState();
-                //Init axis
-                axis = new List<int>();
+                //Init Acceleration Sliders
+                AccSlider = new List<int>();
                 foreach (int val in state.GetAccelerationSliders())
                 {
-                    axis.Add(val);
+                    AccSlider.Add(val);
                 }
-                //Init buttons
+                //Init Buttons
                 buttons = new List<bool>();
                 foreach (bool b in state.GetButtons())
                 {
                     buttons.Add(b);
+                }
+                //Init Force Sliders
+                ForceSlider = new List<int>();
+                foreach (int val in state.GetForceSliders())
+                {
+                    ForceSlider.Add(val);
+                }
+                //Init Pov
+                POV = new List<int>();
+                foreach (int val in state.GetPointOfViewControllers())
+                {
+                    POV.Add(val);
+                }
+                //Init Sliders
+                Sliders = new List<int>();
+                foreach (int val in state.GetSliders())
+                {
+                    Sliders.Add(val);
+                }
+                VelSlider = new List<int>();
+                foreach (int val in state.GetVelocitySliders())
+                {
+                    VelSlider.Add(val);
                 }
             }
             catch (Exception ex)
@@ -125,11 +152,59 @@ namespace ControllerInput
         /// Gets the values of all axis on the device
         /// </summary>
         /// <returns>List<int> of axis values</returns>
-        public List<int> getAxis()
+        public List<int> getAccelerationSliders()
         {
             try
             {
-                return axis;
+                return AccSlider;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(MethodInfo.GetCurrentMethod().DeclaringType.Name + "." + MethodInfo.GetCurrentMethod().Name + " -> " + ex.Message);
+            }
+        }
+
+        public List<int> getForceSliders()
+        {
+            try
+            {
+                return ForceSlider;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(MethodInfo.GetCurrentMethod().DeclaringType.Name + "." + MethodInfo.GetCurrentMethod().Name + " -> " + ex.Message);
+            }
+        }
+
+        public List<int> getPOV()
+        {
+            try
+            {
+                return POV;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(MethodInfo.GetCurrentMethod().DeclaringType.Name + "." + MethodInfo.GetCurrentMethod().Name + " -> " + ex.Message);
+            }
+        }
+
+        public List<int> getSliders()
+        {
+            try
+            {
+                return Sliders;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(MethodInfo.GetCurrentMethod().DeclaringType.Name + "." + MethodInfo.GetCurrentMethod().Name + " -> " + ex.Message);
+            }
+        }
+
+        public List<int> getVelocitySliders()
+        {
+            try
+            {
+                return VelSlider;
             }
             catch (Exception ex)
             {
@@ -147,23 +222,34 @@ namespace ControllerInput
             {
                 state = device.GetCurrentState();
                 //Update buttons
-                buttons.Clear();
-                bool[] newbuttons = state.GetButtons();
-                for (int p = 0; p < newbuttons.Length; p++)
-                {
-                    buttons.Add(newbuttons[p]);
-                }
-                //Update axis
-                axis.Clear();
-                int[] newaxis = state.GetAccelerationSliders();
-                for (int p = 0; p < newaxis.Length; p++)
-                {
-                    axis.Add(newaxis[p]);
-                }
+                UpdateHelper(ref AccSlider, state.GetAccelerationSliders());
+                UpdateHelper(ref buttons, state.GetButtons());
+                UpdateHelper(ref ForceSlider, state.GetForceSliders());
+                UpdateHelper(ref POV, state.GetPointOfViewControllers());
+                UpdateHelper(ref Sliders, state.GetSliders());
+                UpdateHelper(ref VelSlider, state.GetVelocitySliders());
             }
             catch (Exception ex)
             {
                 throw new Exception(MethodInfo.GetCurrentMethod().DeclaringType.Name + "." + MethodInfo.GetCurrentMethod().Name + " -> " + ex.Message);
+            }
+        }
+
+        private void UpdateHelper(ref List<int> Provided, int[] given)
+        {
+            Provided.Clear();
+            foreach(int val in given)
+            {
+                Provided.Add(val);
+            }
+        }
+
+        private void UpdateHelper(ref List<bool> Provided, bool[] given)
+        {
+            Provided.Clear();
+            foreach (bool val in given)
+            {
+                Provided.Add(val);
             }
         }
 

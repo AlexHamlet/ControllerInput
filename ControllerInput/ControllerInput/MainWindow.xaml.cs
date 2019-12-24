@@ -69,6 +69,7 @@ namespace ControllerInput
                 output += b + "\n";
             }
             lblButtons.Content = output;
+            lblAxis.Content = DisplayHelper(mwl.getAxis());
             lblAccSlider.Content = DisplayHelper(mwl.getAccelerationSliders());
             lblForceSlider.Content = DisplayHelper(mwl.getForceSliders());
             lblPOV.Content = DisplayHelper(mwl.getPOV());

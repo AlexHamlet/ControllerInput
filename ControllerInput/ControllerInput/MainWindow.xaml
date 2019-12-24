@@ -15,6 +15,7 @@
         <Label x:Name="lblSliders" Content="Label" HorizontalAlignment="Left" Margin="167,37,0,0" VerticalAlignment="Top"/>
         <Label x:Name="lblPOV" Content="Label" HorizontalAlignment="Left" Margin="129,37,0,0" VerticalAlignment="Top"/>
         <Label x:Name="lblForceSlider" Content="Label" HorizontalAlignment="Left" Margin="91,37,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="lblAxis" Content="Label" HorizontalAlignment="Left" Margin="248,37,0,0" VerticalAlignment="Top"/>
 
     </Grid>
 </Window>

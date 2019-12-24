@@ -106,6 +106,18 @@ namespace ControllerInput
             }
         }
 
+        public List<int> getAxis()
+        {
+            try
+            {
+                return gpad.getAxis();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(MethodInfo.GetCurrentMethod().DeclaringType.Name + "." + MethodInfo.GetCurrentMethod().Name + " -> " + ex.Message);
+            }
+        }
+
         public List<bool> getButtons()
         {
             try

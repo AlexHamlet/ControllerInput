@@ -20,8 +20,9 @@ namespace ControllerInput
         /// The State of the input device
         /// </summary>
         public JoystickState state { get; private set; }
-        List<int> AccSlider;
         List<bool> buttons;
+        List<int> axis;
+        List<int> AccSlider;
         List<int> ForceSlider;
         List<int> POV;
         List<int> Sliders;
@@ -82,6 +83,10 @@ namespace ControllerInput
         private const byte KEYBOARDEVENT_DOWN = 0x28;
         private byte[] keybdArray = new byte[] { KEYBOARDEVENT_A, KEYBOARDEVENT_B, KEYBOARDEVENT_ESC, KEYBOARDEVENT_SPACEBAR, KEYBOARDEVENT_BACKSPACE, KEYBOARDEVENT_TAB, KEYBOARDEVENT_ESC, KEYBOARDEVENT_F10, KEYBOARDEVENT_SHIFT, KEYBOARDEVENT_CTRL };
 
+        /// <summary>
+        /// Constructor for the Gamepad Object
+        /// </summary>
+        /// <param name="stick">The Joystick object you wish to use</param>
         public Gamepad(Joystick stick)
         {
             try
@@ -90,46 +95,49 @@ namespace ControllerInput
                 this.device = stick;
                 //Init State
                 state = new JoystickState();
-                //Init Acceleration Sliders
-                AccSlider = new List<int>();
-                foreach (int val in state.GetAccelerationSliders())
-                {
-                    AccSlider.Add(val);
-                }
+                //Init Axis
+                axis = new List<int>();
+                UpdateHelper(ref axis, state);
                 //Init Buttons
                 buttons = new List<bool>();
-                foreach (bool b in state.GetButtons())
-                {
-                    buttons.Add(b);
-                }
+                UpdateHelper(ref buttons, state.GetButtons());
+                //Init Acceleration Sliders
+                AccSlider = new List<int>();
+                UpdateHelper(ref AccSlider, state.GetAccelerationSliders());
                 //Init Force Sliders
                 ForceSlider = new List<int>();
-                foreach (int val in state.GetForceSliders())
-                {
-                    ForceSlider.Add(val);
-                }
+                UpdateHelper(ref ForceSlider, state.GetForceSliders());
                 //Init Pov
                 POV = new List<int>();
-                foreach (int val in state.GetPointOfViewControllers())
-                {
-                    POV.Add(val);
-                }
+                UpdateHelper(ref POV, state.GetPointOfViewControllers());
                 //Init Sliders
                 Sliders = new List<int>();
-                foreach (int val in state.GetSliders())
-                {
-                    Sliders.Add(val);
-                }
+                UpdateHelper(ref Sliders, state.GetSliders());
+                //Init VelSliders
                 VelSlider = new List<int>();
-                foreach (int val in state.GetVelocitySliders())
-                {
-                    VelSlider.Add(val);
-                }
+                UpdateHelper(ref VelSlider, state.GetVelocitySliders());
             }
             catch (Exception ex)
             {
                 throw new Exception(MethodInfo.GetCurrentMethod().DeclaringType.Name + "." + MethodInfo.GetCurrentMethod().Name + " -> " + ex.Message);
             }
+        }
+
+        /// <summary>
+        /// Gets all listed Axis Values from the JoystickState Object
+        /// </summary>
+        /// <returns>A list of Axis values</returns>
+        public List<int> getAxis()
+        {
+            try
+            {
+                return axis;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(MethodInfo.GetCurrentMethod().DeclaringType.Name + "." + MethodInfo.GetCurrentMethod().Name + " -> " + ex.Message);
+            }
+
         }
 
         /// <summary>
@@ -164,6 +172,10 @@ namespace ControllerInput
             }
         }
 
+        /// <summary>
+        /// Gets all listed Force Slider Values from the JoystickState Object
+        /// </summary>
+        /// <returns>A list of Force Slider values</returns>
         public List<int> getForceSliders()
         {
             try
@@ -176,6 +188,10 @@ namespace ControllerInput
             }
         }
 
+        /// <summary>
+        /// Gets all listed POV Values from the JoystickState Object
+        /// </summary>
+        /// <returns>A list of POV values</returns>
         public List<int> getPOV()
         {
             try
@@ -188,6 +204,10 @@ namespace ControllerInput
             }
         }
 
+        /// <summary>
+        /// Gets all listed Slider Values from the JoystickState Object
+        /// </summary>
+        /// <returns>A list of Slider values</returns>
         public List<int> getSliders()
         {
             try
@@ -200,6 +220,10 @@ namespace ControllerInput
             }
         }
 
+        /// <summary>
+        /// Gets all listed Velocity Sliders in the JoystickState Object
+        /// </summary>
+        /// <returns>A list of Velocity Slider Values</returns>
         public List<int> getVelocitySliders()
         {
             try
@@ -221,8 +245,9 @@ namespace ControllerInput
             try
             {
                 state = device.GetCurrentState();
-                //Update buttons
+                //Call all the UpdateHelper method for all variables
                 UpdateHelper(ref AccSlider, state.GetAccelerationSliders());
+                UpdateHelper(ref axis, state);
                 UpdateHelper(ref buttons, state.GetButtons());
                 UpdateHelper(ref ForceSlider, state.GetForceSliders());
                 UpdateHelper(ref POV, state.GetPointOfViewControllers());
@@ -235,15 +260,67 @@ namespace ControllerInput
             }
         }
 
+
+        /// <summary>
+        /// Clears and updates all Axis listed in JoyStickState
+        /// </summary>
+        /// <param name="axis">List of Axis</param>
+        /// <param name="state">JoyStickState to pull axis from</param>
+        private void UpdateHelper(ref List<int> axis, JoystickState state)
+        {
+            try
+            {
+                axis.Clear();
+                axis.Add(state.X);
+                axis.Add(state.Y);
+                axis.Add(state.Z);
+                axis.Add(state.RotationX);
+                axis.Add(state.RotationY);
+                axis.Add(state.RotationZ);
+                axis.Add(state.ForceX);
+                axis.Add(state.ForceY);
+                axis.Add(state.ForceZ);
+                axis.Add(state.AccelerationX);
+                axis.Add(state.AccelerationY);
+                axis.Add(state.AccelerationZ);
+                axis.Add(state.AngularAccelerationX);
+                axis.Add(state.AngularAccelerationY);
+                axis.Add(state.AngularAccelerationZ);
+                axis.Add(state.AngularVelocityX);
+                axis.Add(state.AngularVelocityY);
+                axis.Add(state.AngularVelocityZ);
+                axis.Add(state.TorqueX);
+                axis.Add(state.TorqueY);
+                axis.Add(state.TorqueZ);
+                axis.Add(state.VelocityX);
+                axis.Add(state.VelocityY);
+                axis.Add(state.VelocityZ);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(MethodInfo.GetCurrentMethod().DeclaringType.Name + "." + MethodInfo.GetCurrentMethod().Name + " -> " + ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Updates a list of values given in an int[]
+        /// </summary>
+        /// <param name="Provided">List to update</param>
+        /// <param name="given">New list values</param>
         private void UpdateHelper(ref List<int> Provided, int[] given)
         {
             Provided.Clear();
-            foreach(int val in given)
+            foreach (int val in given)
             {
                 Provided.Add(val);
             }
         }
 
+        /// <summary>
+        /// Updates a list of values given a bool[]
+        /// </summary>
+        /// <param name="Provided">List to update</param>
+        /// <param name="given">New list values</param>
         private void UpdateHelper(ref List<bool> Provided, bool[] given)
         {
             Provided.Clear();

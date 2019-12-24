@@ -45,27 +45,7 @@ namespace ControllerInput
             {
                 if (gpad != null)
                 {
-                    //TODO: Allow the user to change later.
-                    //17ms delay operates at approx 60fps
-                    //int delay = 17;
-                    //var cancellationTokenSource = new CancellationTokenSource();
-                    //var token = cancellationTokenSource.Token;
-                    //var listener = Task.Factory.StartNew(() =>
-                    //{
-                    //    while (true)
-                    //    {
-                    //        // poll hardware
-                    //        //gpad.stickHandle();
-                    //        gpad.update();
-                    //        Thread.Sleep(delay);
-                    //        if (token.IsCancellationRequested)
-                    //            break;
-                    //    }
-
-                    //    // cleanup, e.g. close connection
-                    //}, token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
                     gpad.update();
-
                 }
             }
             catch (Exception ex)
@@ -106,6 +86,10 @@ namespace ControllerInput
             }
         }
 
+        /// <summary>
+        /// Gets a list of Axis from the gamepad object
+        /// </summary>
+        /// <returns>A list<int> of axis values</returns>
         public List<int> getAxis()
         {
             try
@@ -118,6 +102,10 @@ namespace ControllerInput
             }
         }
 
+        /// <summary>
+        /// Gets a list of Button values from the gamepad object
+        /// </summary>
+        /// <returns>A List<bool> of button values</returns>
         public List<bool> getButtons()
         {
             try
@@ -131,9 +119,9 @@ namespace ControllerInput
         }
 
         /// <summary>
-        /// Gets the values of all axis on the device
+        /// Gets the values of Acceleration Sliders on the gamepad device
         /// </summary>
-        /// <returns>List<int> of axis values</returns>
+        /// <returns>List<int> of Slider values</returns>
         public List<int> getAccelerationSliders()
         {
             try
@@ -146,6 +134,10 @@ namespace ControllerInput
             }
         }
 
+        /// <summary>
+        /// Gets the values of Force Sliders on the gamepad device
+        /// </summary>
+        /// <returns>List<int> of Slider values</returns>
         public List<int> getForceSliders()
         {
             try
@@ -158,6 +150,10 @@ namespace ControllerInput
             }
         }
 
+        /// <summary>
+        /// Gets the values of POV on the gamepad device
+        /// </summary>
+        /// <returns>List<int> of POV values</returns>
         public List<int> getPOV()
         {
             try
@@ -170,6 +166,10 @@ namespace ControllerInput
             }
         }
 
+        /// <summary>
+        /// Gets the values of Sliders on the gamepad device
+        /// </summary>
+        /// <returns>List<int> of Slider values</returns>
         public List<int> getSliders()
         {
             try
@@ -182,6 +182,10 @@ namespace ControllerInput
             }
         }
 
+        /// <summary>
+        /// Gets the values of Velocity Sliders on the gamepad device
+        /// </summary>
+        /// <returns>List<int> of Slider values</returns>
         public List<int> getVelocitySliders()
         {
             try

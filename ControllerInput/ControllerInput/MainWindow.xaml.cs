@@ -26,6 +26,10 @@ namespace ControllerInput
         private delegate void UpdateDisplayDelegate();
         BackgroundWorker background;
 
+        Joystick inuse;
+        CancellationTokenSource cancellationTokenSource;
+        CancellationToken token;
+
         /// <summary>
         /// Constructor. Initializes Logic class and device list.
         /// </summary>
@@ -117,12 +121,17 @@ namespace ControllerInput
                 Joystick selected = (Joystick)cmbbxDevices.SelectedItem;
                 if (selected != null)
                 {
+                    if (inuse != null && !selected.Equals(inuse))
+                    {
+                        cancellationTokenSource.Cancel();
+                    }
+                    inuse = selected;
                     mwl.SelectStick(selected);
                     mwl.update();
 
                     int delay = 17;
-                    var cancellationTokenSource = new CancellationTokenSource();
-                    var token = cancellationTokenSource.Token;
+                    cancellationTokenSource = new CancellationTokenSource();
+                    token = cancellationTokenSource.Token;
                     //TroubleShooting
                     string output;
                     List<bool> bstates;
@@ -148,6 +157,10 @@ namespace ControllerInput
 
                         // cleanup, e.g. close connection
                     }, token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+                }
+                else
+                {
+                    cancellationTokenSource.Cancel();
                 }
             }
             catch (Exception ex)

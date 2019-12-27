@@ -60,6 +60,7 @@
     </ApplicationDefinition>
     <Compile Include="Gamepad.cs" />
     <Compile Include="MainWindowLogic.cs" />
+    <Compile Include="Profile.cs" />
     <Compile Include="USBDevice.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

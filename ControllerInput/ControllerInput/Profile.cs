@@ -12,25 +12,37 @@ namespace ControllerInput
         //Default profile should be included, additional profiles may be created by the user
         //this should be referenced when keyboard/mouse input is required
         public Profile selected { get; private set; }
+        public Dictionary<int, byte> buttons { get; private set; }
         
         public static List<Profile> getProfiles()
         {
             return null;
         }
 
-        public void setProfile()
+        public void setProfile(Profile prof)
         {
+            try
+            {
+                selected = prof;
+            }
+            catch (Exception)
+            {
 
+                throw;
+            }
         }
 
-        public void setButton()
+        public void setButton(int button, byte key)
         {
-
+            buttons.Remove(button);
+            buttons.Add(button, key);
         }
 
-        public void getButton()
+        public byte getButton(int button)
         {
-
+            byte key;
+            buttons.TryGetValue(button, out key);
+            return key;
         }
     }
 }

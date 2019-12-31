@@ -11,6 +11,8 @@ namespace ControllerInput
         //This class is going to store input profiles
         //Default profile should be included, additional profiles may be created by the user
         //this should be referenced when keyboard/mouse input is required
+
+        //Look into Entity Framework
         public Profile selected { get; private set; }
         public Dictionary<int, byte> buttons { get; private set; }
         

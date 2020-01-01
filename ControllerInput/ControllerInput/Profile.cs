@@ -12,7 +12,7 @@ namespace ControllerInput
         //Default profile should be included, additional profiles may be created by the user
         //this should be referenced when keyboard/mouse input is required
 
-        //Look into Entity Framework
+        //Look into Found Entity Framework Course on Pluralsight
         public Profile selected { get; private set; }
         public Dictionary<int, byte> buttons { get; private set; }
         

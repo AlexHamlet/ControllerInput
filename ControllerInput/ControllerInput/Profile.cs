@@ -13,6 +13,7 @@ namespace ControllerInput
         //this should be referenced when keyboard/mouse input is required
 
         //Look into Found Entity Framework Course on Pluralsight
+        //Accidentally learned about linq, this may be useful later.
         public Profile selected { get; private set; }
         public Dictionary<int, byte> buttons { get; private set; }
         
